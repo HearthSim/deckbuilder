@@ -11,6 +11,45 @@
     </div>
     <div class="conatiner-fluid">
       <h1>Hearthstone Deckbuilder</h1>
+      <div id="action-menu">
+        <ul>
+          <li><a id="act-new-deck">Create New Deck</a></li>
+        </ul>
+      </div>
+      <div id="class-select">
+        <h2>Select a Class:</h2>
+        <ul>
+          <li><a data-class="Warrior">Warrior</a></li>
+          <li><a data-class="Shaman">Shaman</a></li>
+          <li><a data-class="Rogue">Rogue</a></li>
+          <li><a data-class="Paladin">Paladin</a></li>
+          <li><a data-class="Hunter">Hunter</a></li>
+          <li><a data-class="Druid">Druid</a></li>
+          <li><a data-class="Warlock">Warlock</a></li>
+          <li><a data-class="Mage">Mage</a></li>
+          <li><a data-class="Priest">Priest</a></li>
+        </ul>
+      </div>
+      <div id=deck-builder>
+        <h2><span class="class-name"></span> Deck Builder</h2>
+        <div class="row">
+          <div id="card-list" class="col-xs-8">
+            <h3>Available Cards</h3>
+            <div id="class-card-list">
+              <h4><span class="class-name"/></h4>
+              <ul/>
+            </div>
+            <div id="neutral-card-list">
+              <h4>Neutral</h4>
+              <ul/>
+            </div>
+          </div>
+          <div id="deck-list" class="col-xs-2">
+            <h3>Deck</h3>
+            <ul/>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
