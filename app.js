@@ -63,7 +63,7 @@ function genCardList(element, list, handler) {
   element.empty();
   $.each(list, function(cardIndex, card) {
     if (previous===card) {
-      count+=1;
+      count++;
       element.children().last().children().last().text(card.name+" x"+count);
     } else {
       count=1;
@@ -86,8 +86,21 @@ function refreshDeck() {
 }
 
 function addCardToDeck(index, card) {
-  currentDeck.push(card);
+  if (countDups(currentDeck, card)<2) {
+    console.log("in");
+    currentDeck.push(card);
+  }
   refreshDeck();
+}
+
+function countDups(list, card) {
+  var count=0;
+  $.each(list, function(cardIndex, curCard) {
+    if (curCard===card) {
+      count++;
+    }
+  });
+  return count;
 }
 
 function removeCardFromDeck(index, card) {
