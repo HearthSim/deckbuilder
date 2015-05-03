@@ -6,8 +6,8 @@ function setClass(playerClass) {
   currentClass = playerClass;
   console.log(playerClass)
   $('span.class-name').text(playerClass);
-  genCardList($('#class-card-list ul'),cards.collectible[playerClass]);
-  genCardList($('#neutral-card-list ul'),cards.collectible[null]);
+  genCardList($('#class-card-list ul'), cards.collectible[playerClass], addCardToDeck);
+  genCardList($('#neutral-card-list ul'), cards.collectible[null], addCardToDeck);
 }
 
 function init() {
@@ -58,16 +58,25 @@ function parseData(data) {
   return result;
 }
 
-function genCardList(element, list) {
+function genCardList(element, list, handler) {
+  var count=1;
+  var previous;
   element.empty();
   $.each(list, function(cardIndex, card) {
-    element.append(
-        $('<li>').append(
-          $('<a>', {href: 'javascript:void(0);'}).append(card.name).click(function() {
-            addCardToDeck(card);
-          })
-          ));
-  });
+    if (previous===card) {
+      count+=1;
+      element.children().last().children().last().text(card.name+" x"+count);
+    } else {
+      count=1;
+      previous=card;
+      element.append(
+          $('<li>').append(
+            $('<a>', {href: 'javascript:void(0);'}).text(card.name).click(function() {
+              handler(card);
+            })
+            ));
+    }
+    });
 }
 
 function addCardToDeck(card) {
@@ -79,7 +88,7 @@ function refreshDeck() {
   var count=1;
   $('#deck-list ul').empty();
   sortCards(currentDeck);
-  genCardList($('#deck-list ul'), currentDeck);
+  genCardList($('#deck-list ul'), currentDeck, removeCardFromDeck);
 }
 
 function removeCardFromDeck(index) {
