@@ -34,7 +34,7 @@ function parseData(data) {
   $.each(data, function(collectionName,collection) {
     $.each(collection, function(cardIndex,card) {
       //if (card.hasOwnProperty('collectible') && card['collectible']) {
-      if (card['collectible']) {
+      if (card['collectible'] && card['type']!="Hero") {
         card['collection']=collectionName;
         var playerClass;
         if (card.hasOwnProperty('playerClass')) {
@@ -86,7 +86,8 @@ function refreshDeck() {
 }
 
 function addCardToDeck(index, card) {
-  if (countDups(currentDeck, card)<2) {
+  var limit=(card.rarity=="Legendary"?1:2);
+  if (countDups(currentDeck, card)<limit) {
     console.log("in");
     currentDeck.push(card);
   }
