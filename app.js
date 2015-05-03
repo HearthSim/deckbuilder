@@ -33,10 +33,11 @@ function init() {
     var urlVars=$.getUrlVars();
     console.log(urlVars);
     if ('cards' in urlVars) {
-      loadDeck(urlVars);
-      $('#class-select').hide();
-      $('#deck-builder').show();
-      refreshDeck();
+      if (loadDeck(urlVars)) {
+        $('#class-select').hide();
+        $('#deck-builder').show();
+        refreshDeck();
+      }
     }
     $('#loading-indicator').hide();
     console.log('cards: %o', cards);
@@ -57,15 +58,22 @@ function loadDeck(urlVars) {
   var curIndex=0,nextIndex;
   var cardString,id;
   var card;
-  setClass(urlVars['class']);
+  try {
+    setClass(urlVars['class']);
+  } catch(err) {
+    return false;
+  }
   cardString=urlVars['cards'];
   while (curIndex<cardString.length) {
     nextIndex=cardString.indexOf('_',curIndex)+4;
     id=cardString.slice(curIndex,nextIndex);
     curIndex=nextIndex;
     card = cards['byid'][id];
-    addCardToDeck(0,card);
+    if (card) {
+      addCardToDeck(0,card);
+    }
   }
+  return true;
 }
 
 function parseData(data) {
