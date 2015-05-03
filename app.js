@@ -9,10 +9,35 @@ function setClass(playerClass) {
   genCardList($('#neutral-card-list ul'), cards.collectible[null], addCardToDeck);
 }
 
+$.extend({
+  getUrlVars: function(){
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+      hash = hashes[i].split('=');
+      vars.push(hash[0]);
+      vars[hash[0]] = hash[1];
+    }
+    return vars;
+  },
+  getUrlVar: function(name){
+    return $.getUrlVars()[name];
+  }
+});
+
 function init() {
   $('#loading-indicator').show();
   $.getJSON('http://hearthstonejson.com/json/AllSets.json', function(data) {
     cards = parseData(data);
+    var urlVars=$.getUrlVars();
+    console.log(urlVars);
+    if ('cards' in urlVars) {
+      loadDeck(urlVars);
+      $('#class-select').hide();
+      $('#deck-builder').show();
+      refreshDeck();
+    }
     $('#loading-indicator').hide();
     console.log('cards: %o', cards);
   });
@@ -28,9 +53,25 @@ function init() {
   });
 }
 
+function loadDeck(urlVars) {
+  var curIndex=0,nextIndex;
+  var cardString,id;
+  var card;
+  setClass(urlVars['class']);
+  cardString=urlVars['cards'];
+  while (curIndex<cardString.length) {
+    nextIndex=cardString.indexOf('_',curIndex)+4;
+    id=cardString.slice(curIndex,nextIndex);
+    curIndex=nextIndex;
+    card = cards['byid'][id];
+    addCardToDeck(0,card);
+  }
+}
+
 function parseData(data) {
   var result = {byCollection:data};
   var collectible={};
+  var byid={};
   $.each(data, function(collectionName,collection) {
     $.each(collection, function(cardIndex,card) {
       //if (card.hasOwnProperty('collectible') && card['collectible']) {
@@ -47,6 +88,7 @@ function parseData(data) {
           collectible[playerClass]=[];
         }
         collectible[playerClass].push(card);
+        byid[card.id]=card;
       }
     });
   });
@@ -54,6 +96,7 @@ function parseData(data) {
     sortCards(cards);
   });
   result['collectible']=collectible;
+  result['byid']=byid;
   return result;
 }
 
@@ -83,6 +126,7 @@ function refreshDeck() {
   $('#deck-list ul').empty();
   sortCards(currentDeck);
   $('span.deck-count').text(currentDeck.length);
+  updateSaveLink();
   genCardList($('#deck-list ul'), currentDeck, removeCardFromDeck);
 }
 
@@ -91,6 +135,11 @@ function addCardToDeck(index, card) {
   if (countDups(currentDeck, card)<limit && currentDeck.length<30) {
     currentDeck.push(card);
   }
+  refreshDeck();
+}
+
+function removeCardFromDeck(index, card) {
+  currentDeck.splice(index, 1);
   refreshDeck();
 }
 
@@ -104,14 +153,27 @@ function countDups(list, card) {
   return count;
 }
 
-function removeCardFromDeck(index, card) {
-  currentDeck.splice(index, 1);
-  refreshDeck();
-}
-
 function clearDeck() {
   currentDeck=[];
   refreshDeck();
+}
+
+function updateSaveLink() {
+  var cards='';
+  $.each(currentDeck, function(cardIndex, card) {
+    cards+=card.id;
+  });
+  $('#act-save-deck').attr('href','?cards='+cards+'&class='+currentClass);
+}
+
+function encodeCards(list) {
+  $.each(list, function(cardIndex, card) {
+    var id,prefix,number;
+    id=card.id.toUpperCase();
+  });
+}
+
+function decodeCards(val) {
 }
 
 function sortCards(list) {
