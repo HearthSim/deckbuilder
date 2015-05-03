@@ -63,7 +63,7 @@ function genCardList(element, list) {
   $.each(list, function(cardIndex, card) {
     element.append(
         $('<li>').append(
-          $('<a>').append(card.name).click(function() {
+          $('<a>', {href: 'javascript:void(0);'}).append(card.name).click(function() {
             addCardToDeck(card);
           })
           ));
@@ -76,16 +76,10 @@ function addCardToDeck(card) {
 }
 
 function refreshDeck() {
+  var count=1;
   $('#deck-list ul').empty();
   sortCards(currentDeck);
-  $.each(currentDeck, function(cardIndex, card) {
-    $('#deck-list ul').append(
-        $('<li>').append(
-          $('<a>').append(card.name).click(function() {
-            removeCardFromDeck(cardIndex);
-          })
-      ));
-  });
+  genCardList($('#deck-list ul'), currentDeck);
 }
 
 function removeCardFromDeck(index) {
