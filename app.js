@@ -82,13 +82,13 @@ function refreshDeck() {
   var count=1;
   $('#deck-list ul').empty();
   sortCards(currentDeck);
+  $('span.deck-count').text(currentDeck.length);
   genCardList($('#deck-list ul'), currentDeck, removeCardFromDeck);
 }
 
 function addCardToDeck(index, card) {
   var limit=(card.rarity=="Legendary"?1:2);
-  if (countDups(currentDeck, card)<limit) {
-    console.log("in");
+  if (countDups(currentDeck, card)<limit && currentDeck.length<30) {
     currentDeck.push(card);
   }
   refreshDeck();
