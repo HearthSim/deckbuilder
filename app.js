@@ -5,8 +5,8 @@ var currentDeck =[];
 function setClass(playerClass) {
   currentClass = playerClass;
   $('span.class-name').text(playerClass);
-  genCardList($('#class-card-list ul'), cards.collectible[playerClass], addCardToDeck);
-  genCardList($('#neutral-card-list ul'), cards.collectible[null], addCardToDeck);
+  genCardList($('#class-card-list ul'), cards.collectible[playerClass], false);
+  genCardList($('#neutral-card-list ul'), cards.collectible[null], false);
 }
 
 $.extend({
@@ -108,7 +108,7 @@ function parseData(data) {
   return result;
 }
 
-function genCardList(element, list, handler) {
+function genCardList(element, list, isDeck) {
   var count=1;
   var previous;
   element.empty();
@@ -119,12 +119,20 @@ function genCardList(element, list, handler) {
     } else {
       count=1;
       previous=card;
-      element.append(
-          $('<li>').append(
-            $('<a>', {href: 'javascript:void(0);'}).text(card.name).click(function() {
-              handler(cardIndex, card);
-            })
-            ));
+      anchor=$('<a>', {href: 'javascript:void(0);'})
+        .click(function() {
+          if (isDeck) {
+            removeCardFromDeck(cardIndex);
+          } else {
+            addCardToDeck(card);
+          }
+        });
+      if (isDeck){
+        anchor.text(card.name);
+      } else {
+        anchor.append('<img src="http://wow.zamimg.com/images/hearthstone/cards/enus/original/'+card.id+'.png">');
+      }
+      element.append($('<li>').append(anchor));
     }
     });
 }
@@ -135,10 +143,10 @@ function refreshDeck() {
   sortCards(currentDeck);
   $('span.deck-count').text(count?count:'');
   updateSaveLink();
-  genCardList($('#deck-list ul'), currentDeck, removeCardFromDeck);
+  genCardList($('#deck-list ul'), currentDeck, true);
 }
 
-function addCardToDeck(index, card) {
+function addCardToDeck(card) {
   var limit=(card.rarity=="Legendary"?1:2);
   if (countDups(currentDeck, card)<limit && currentDeck.length<30) {
     currentDeck.push(card);
@@ -146,7 +154,7 @@ function addCardToDeck(index, card) {
   refreshDeck();
 }
 
-function removeCardFromDeck(index, card) {
+function removeCardFromDeck(index) {
   currentDeck.splice(index, 1);
   refreshDeck();
 }
