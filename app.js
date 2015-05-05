@@ -70,7 +70,7 @@ function loadDeck(urlVars) {
     curIndex=nextIndex;
     card = cards['byid'][id];
     if (card) {
-      addCardToDeck(0,card);
+      currentDeck.push(card);
     }
   }
   return true;
