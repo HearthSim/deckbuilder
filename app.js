@@ -44,11 +44,11 @@ function init() {
   });
   $('#act-new-deck').click(function() {
     $('#deck-builder').hide();
-    clearDeck();
     $('#class-select').show();
   });
   $('#class-select ul li a').click(function() {
     setClass($(this).data().class)
+    clearDeck();
     $('#class-select').hide();
     $('#deck-builder').show();
   });
@@ -130,10 +130,10 @@ function genCardList(element, list, handler) {
 }
 
 function refreshDeck() {
-  var count=1;
+  var count=currentDeck.length;
   $('#deck-list ul').empty();
   sortCards(currentDeck);
-  $('span.deck-count').text(currentDeck.length);
+  $('span.deck-count').text(count?count:'');
   updateSaveLink();
   genCardList($('#deck-list ul'), currentDeck, removeCardFromDeck);
 }
