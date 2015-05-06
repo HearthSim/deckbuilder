@@ -5,8 +5,8 @@ var currentDeck =[];
 function setClass(playerClass) {
   currentClass = playerClass;
   $('span.class-name').text(playerClass);
-  genCardList($('#class-card-list ul'), cards.collectible[playerClass], false);
-  genCardList($('#neutral-card-list ul'), cards.collectible[null], false);
+  genCardList($('#class-card-list'), cards.collectible[playerClass], false);
+  genCardList($('#neutral-card-list'), cards.collectible[null], false);
 }
 
 $.extend({
@@ -119,20 +119,24 @@ function genCardList(element, list, isDeck) {
     } else {
       count=1;
       previous=card;
-      anchor=$('<a>', {href: 'javascript:void(0);'})
+      button=$('<button>')//, {class: 'span-4 well', href: 'javascript:void(0);'})
         .click(function() {
           if (isDeck) {
             removeCardFromDeck(cardIndex);
           } else {
             addCardToDeck(card);
           }
-        });
+        })
+        .addClass('btn');
       if (isDeck){
-        anchor.text(card.name);
+        button.addClass('btn-link').addClass('deck-item');
+        button.text(card.name);
       } else {
-        anchor.append('<img src="http://wow.zamimg.com/images/hearthstone/cards/enus/original/'+card.id+'.png">');
+        button.append('<img class="img-responsive" src="http://wow.zamimg.com/images/hearthstone/cards/enus/original/'+card.id+'.png">');
+        button.addClass('col-lg-2').addClass('col-md-3').addClass('col-sm-4').addClass('available-item');
+        button=$('<div>').addClass('row-fluid').append(button);
       }
-      element.append($('<li>').append(anchor));
+      element.append(button);
     }
     });
 }
@@ -143,7 +147,7 @@ function refreshDeck() {
   sortCards(currentDeck);
   $('span.deck-count').text(count?count:'');
   updateSaveLink();
-  genCardList($('#deck-list ul'), currentDeck, true);
+  genCardList($('#deck-list'), currentDeck, true);
 }
 
 function addCardToDeck(card) {
