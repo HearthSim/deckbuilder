@@ -115,7 +115,7 @@ function genCardList(element, list, isDeck) {
   $.each(list, function(cardIndex, card) {
     if (previous===card) {
       count++;
-      element.children().last().children().last().text(card.name+" x"+count);
+      element.children().last().text(card.name+" x"+count);
     } else {
       count=1;
       previous=card;
@@ -127,9 +127,9 @@ function genCardList(element, list, isDeck) {
             addCardToDeck(card);
           }
         })
-        .addClass('btn');
+        .addClass('btn').addClass('btn-link');
       if (isDeck){
-        button.addClass('btn-link').addClass('deck-item');
+        button.addClass('deck-item');
         button.text(card.name);
       } else {
         button.append('<img class="img-responsive" src="http://wow.zamimg.com/images/hearthstone/cards/enus/original/'+card.id+'.png">');

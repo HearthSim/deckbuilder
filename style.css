@@ -31,7 +31,3 @@ html, body {
 .deck-item {
   display: block;
 }
-.available-item {
-  border: none;
-  background: none;
-}
