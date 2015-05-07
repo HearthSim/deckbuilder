@@ -31,7 +31,6 @@ function init() {
   $.getJSON('http://hearthstonejson.com/json/AllSets.json', function(data) {
     cards = parseData(data);
     var urlVars=$.getUrlVars();
-    console.log(urlVars);
     if ('cards' in urlVars) {
       if (loadDeck(urlVars)) {
         $('#class-select').hide();
@@ -51,6 +50,13 @@ function init() {
     clearDeck();
     $('#class-select').hide();
     $('#deck-builder').show();
+  });
+  $(window).on('scroll',function() {
+    if ($(window).scrollTop() >= $('#card-list').offset().top) {
+      $('#deck-area').addClass('fixed');
+    } else {
+      $('#deck-area').removeClass('fixed');
+    }
   });
 }
 
