@@ -31,8 +31,29 @@ html, body {
 .deck-item {
   display: block;
 }
-#deck-area.fixed {
+
+#card-list-header {
+  background: rgb(255,255,255);
+  z-index: 50;
+}
+.fixed {
   position: fixed;
+}
+#card-list-header.fixed {
+  top: 0;
+  left: 0;
+}
+#deck-area.fixed {
   top: 0;
   right: 0;
+}
+
+.list-header {
+  display: none;
+}
+.card-list-section:after {
+  content: " ";
+  display: block; 
+  height: 0; 
+  clear: both;
 }

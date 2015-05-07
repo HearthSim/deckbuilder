@@ -51,12 +51,14 @@ function init() {
     $('#class-select').hide();
     $('#deck-builder').show();
   });
-  $(window).on('scroll',function() {
-    if ($(window).scrollTop() >= $('#card-list').offset().top) {
-      $('#deck-area').addClass('fixed');
-    } else {
-      $('#deck-area').removeClass('fixed');
-    }
+  $(window).on('scroll',onScroll);
+  $('#tab-class a').click(function() {
+    $(window).scrollTop(Math.floor($('#card-list').offset().top));
+    onScroll();
+  });
+  $('#tab-neutral a').click(function() {
+    $(window).scrollTop(Math.floor($('#neutral-label').offset().top-$('#card-list-header').height()));
+    onScroll();
   });
 }
 
@@ -231,5 +233,33 @@ function compareCards(a,b) {
     return 1;
   }
   return 0;
+}
+
+function onScroll() {
+  var scrollTop=$(window).scrollTop();
+  console.log(scrollTop);
+  console.log($('#neutral-label').offset().top);
+  console.log($('#card-list-header').height());
+  console.log('');
+  if (scrollTop >= Math.floor($('#card-list').offset().top)) {
+    $('#deck-area').addClass('fixed');
+    $('#card-list-header').addClass('fixed').addClass('col-xs-6').addClass('col-sm-8').addClass('col-lg-10');
+    if (scrollTop >= Math.floor($('#neutral-label').offset().top-$('#card-list-header').height())) {
+      $('#neutral-header').show();
+      $('#class-header').hide();
+      $('#tab-neutral').addClass('active');
+      $('#tab-class').removeClass('active');
+    } else {
+      $('#class-header').show();
+      $('#neutral-header').hide();
+      $('#tab-class').addClass('active');
+      $('#tab-neutral').removeClass('active');
+    }
+  } else {
+    $('#deck-area').removeClass('fixed');
+    $('#card-list-header').removeClass('fixed').removeClass('col-xs-6').removeClass('col-sm-8').removeClass('col-lg-10');
+    $('#neutral-header').hide();
+    $('#class-header').hide();
+  }
 }
 
