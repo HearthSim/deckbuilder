@@ -1,6 +1,7 @@
 var cards = {};
 var currentClass;
 var currentDeck =[];
+var lastInput="";
 
 function setClass(playerClass) {
   currentClass = playerClass;
@@ -64,6 +65,7 @@ function init() {
     $(window).scrollTop(Math.floor(Math.floor($('#neutral-label').offset().top+offset-$('#card-list-header').height())));
     onScroll();
   });
+  setInterval(function() { observeInputValue($('#srch-term').val()); }, 100);
 }
 
 function loadDeck(urlVars) {
@@ -145,8 +147,8 @@ function genCardList(element, list, isDeck) {
         button.text(card.name);
       } else {
         button.append('<img class="img-responsive" src="http://wow.zamimg.com/images/hearthstone/cards/enus/original/'+card.id+'.png">');
-        button.addClass('col-lg-2').addClass('col-md-3').addClass('col-sm-4').addClass('available-item');
-        button=$('<div>').addClass('row-fluid').append(button);
+        button.addClass('col-lg-2').addClass('col-md-3').addClass('col-sm-4');
+        button=$('<div id="'+card.id+'">').addClass('row-fluid').addClass('available-item').append(button);
       }
       element.append(button);
     }
@@ -268,4 +270,22 @@ function onScroll() {
     }
   }
 }
-
+function observeInputValue(value) {
+  if (value!=lastInput) {
+    search(value);
+  }
+  lastInput=value;
+}
+function search(value) {
+  words=value.toLowerCase().split(' ');
+  $('.available-item').hide();
+  $.each(cards.collectible, function (className,cardList) {
+    $.each(cardList, function (cardIndex, card) {
+      if (words.every(function (word) {
+        return ((card.name.toLowerCase().indexOf(word) > -1) || ((card.text || '').toLowerCase().indexOf(word) > -1))
+      })) {
+        $('#'+card.id).show();
+      }
+    });
+  });
+}
