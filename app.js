@@ -340,3 +340,8 @@ function searchClass(cardList, words) {
   });
   return count;
 }
+
+//can be called from console to make right click menu work on cards again.
+function enableDebuging() {
+  $('.available-item button').unbind('contextmenu');
+}
