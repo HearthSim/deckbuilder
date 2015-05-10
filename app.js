@@ -282,7 +282,9 @@ function search(value) {
   $.each(cards.collectible, function (className,cardList) {
     $.each(cardList, function (cardIndex, card) {
       if (words.every(function (word) {
-        return ((card.name.toLowerCase().indexOf(word) > -1) || ((card.text || '').toLowerCase().indexOf(word) > -1))
+        return [card.name,card.text,card.race,card.rarity,card.type].some( function (parameter) {
+          return (parameter || '').toLowerCase().indexOf(word) > -1;
+        });
       })) {
         $('#'+card.id).show();
       }
