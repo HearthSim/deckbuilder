@@ -127,15 +127,17 @@ function parseData(data) {
 }
 
 function genCardList(element, list, isDeck) {
-  var count=1;
+  var count = 1;
   var previous;
+  var curve = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
   element.empty();
-  $('.deck-count').hide();
+  $('.in-deck-count').hide();
   $.each(list, function(cardIndex, card) {
     if (previous===card) {
       count++;
+      curve[getManaSlot(card.cost)]++;
       element.children().last().text(card.name+" x"+count);
-      $('#'+card.id+' .deck-count').show().text(count + ' in deck');
+      $('#'+card.id+' .in-deck-count').show().text(count + ' in deck');
     } else {
       count=1;
       previous=card;
@@ -151,7 +153,8 @@ function genCardList(element, list, isDeck) {
       if (isDeck){
         button.addClass('deck-item');
         button.text(card.name);
-        $('#'+card.id+' .deck-count').show().text(count + ' in deck');
+        $('#'+card.id+' .in-deck-count').show().text(count + ' in deck');
+        curve[getManaSlot(card.cost)]++;
       } else {
         button.bind('contextmenu', function(e) {
           var which=-1;
@@ -168,12 +171,13 @@ function genCardList(element, list, isDeck) {
         });
         button.append('<img class="img-responsive" src="http://wow.zamimg.com/images/hearthstone/cards/enus/original/'+card.id+'.png">');
         button.addClass('col-lg-2').addClass('col-md-3').addClass('col-sm-4');
-        button.append($('<div>').addClass('deck-count'));
+        button.append($('<div>').addClass('in-deck-count'));
         button=$('<div id="'+card.id+'">').addClass('row-fluid').addClass('available-item').append(button);
       }
       element.append(button);
     }
     });
+  displayCurve(curve);
 }
 
 function refreshDeck() {
@@ -339,6 +343,27 @@ function searchClass(cardList, words) {
     }
   });
   return count;
+}
+
+function displayCurve(curve) {
+  var max=0;
+  $.each(curve, function (cost, count) {
+    if (count>max) {
+      max=count;
+    }
+  });
+  $.each(curve, function (cost, count) {
+    var id='#mana-'+cost;
+    $(id+' .bar-count').text(count);
+    $(id+' div div').css('padding-bottom',(max && count/max*350)+'%'); //bar is 0 height if max is 0;
+  });
+}
+
+function getManaSlot(cost) {
+  if (cost >= 7) {
+    return 7;
+  }
+  return cost;
 }
 
 //can be called from console to make right click menu work on cards again.

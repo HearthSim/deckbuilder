@@ -57,7 +57,7 @@ html, body {
   height: 0; 
   clear: both;
 }
-.deck-count {
+.in-deck-count {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -84,4 +84,37 @@ html, body {
 }
 #no-results {
   display: none;
+}
+#mana-curve {
+  width: 100%;
+  padding: 5px;
+  /*padding-top: 50%;*/
+  border: 1px solid #000;
+}
+.mana-col {
+  display: inline-block;
+  width: 12.5%;
+  padding: 0 2%;
+  /*background: #000;*/
+}
+.bar-container {
+  padding-bottom: 400%;
+  border: 1px solid #000;
+  position: relative;
+}
+.mana-slot {
+  text-align: center;
+}
+.bar-count {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+.mana-bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background: #F72;
 }
