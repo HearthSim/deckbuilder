@@ -281,23 +281,48 @@ function observeInputValue(value) {
   lastInput=value;
 }
 function search(value) {
+  var hasResults=false;
   if (value=='') {
     $('.available-item').show();
     $('#search-clear').hide();
+    $('#class-label').show();
+    $('#neutral-label').show();
+    $('#no-results').hide();
     return;
   }
   $('#search-clear').show();
   words=value.toLowerCase().split(' ');
   $('.available-item').hide();
-  $.each(cards.collectible, function (className,cardList) {
-    $.each(cardList, function (cardIndex, card) {
-      if (words.every(function (word) {
-        return [card.name,card.text,card.race,card.rarity,card.type].some( function (parameter) {
-          return (parameter || '').toLowerCase().indexOf(word) > -1;
-        });
-      })) {
-        $('#'+card.id).show();
-      }
-    });
+  if (searchClass(cards.collectible[currentClass], words) == 0) {
+      $('#class-label').hide();
+  } else {
+      hasResults = true;
+      $('#class-label').show();
+  }
+  if (searchClass(cards.collectible[null], words) == 0) {
+      $('#neutral-label').hide();
+  } else {
+      hasResults = true;
+      $('#neutral-label').show();
+  }
+  if (hasResults) {
+    $('#no-results').hide();
+  } else {
+    $('#no-results').show();
+  }
+}
+
+function searchClass(cardList, words) {
+  var count=0;
+  $.each(cardList, function (cardIndex, card) {
+    if (words.every(function (word) {
+      return [card.name,card.text,card.race,card.rarity,card.type].some( function (parameter) {
+        return (parameter || '').toLowerCase().indexOf(word) > -1;
+      });
+    })) {
+      $('#'+card.id).show();
+      count++;
+    }
   });
+  return count;
 }
