@@ -45,6 +45,7 @@ function init() {
   $('#act-new-deck').click(function() {
     $('#deck-builder').hide();
     $('#class-select').show();
+    $('#srch-term').focus().select();
   });
   $('#class-select ul li a').click(function() {
     setClass($(this).data().class)
@@ -66,6 +67,9 @@ function init() {
     onScroll();
   });
   setInterval(function() { observeInputValue($('#srch-term').val()); }, 100);
+  $('#search-clear').click(function() {
+    $('#srch-term').val('');
+  });
 }
 
 function loadDeck(urlVars) {
@@ -277,6 +281,12 @@ function observeInputValue(value) {
   lastInput=value;
 }
 function search(value) {
+  if (value=='') {
+    $('.available-item').show();
+    $('#search-clear').hide();
+    return;
+  }
+  $('#search-clear').show();
   words=value.toLowerCase().split(' ');
   $('.available-item').hide();
   $.each(cards.collectible, function (className,cardList) {
