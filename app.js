@@ -130,10 +130,12 @@ function genCardList(element, list, isDeck) {
   var count=1;
   var previous;
   element.empty();
+  $('.deck-count').hide();
   $.each(list, function(cardIndex, card) {
     if (previous===card) {
       count++;
       element.children().last().text(card.name+" x"+count);
+      $('#'+card.id+' .deck-count').show().text(count + ' in deck');
     } else {
       count=1;
       previous=card;
@@ -149,9 +151,24 @@ function genCardList(element, list, isDeck) {
       if (isDeck){
         button.addClass('deck-item');
         button.text(card.name);
+        $('#'+card.id+' .deck-count').show().text(count + ' in deck');
       } else {
+        button.bind('contextmenu', function(e) {
+          var which=-1;
+          e.preventDefault();
+          $.each(currentDeck, function (cardIndex, deckCard) {
+            if (deckCard.id == card.id) {
+              which=cardIndex;
+              return false; //exit the each loop
+            }
+          });
+          if (which > -1) {
+            removeCardFromDeck(which);
+          }
+        });
         button.append('<img class="img-responsive" src="http://wow.zamimg.com/images/hearthstone/cards/enus/original/'+card.id+'.png">');
         button.addClass('col-lg-2').addClass('col-md-3').addClass('col-sm-4');
+        button.append($('<div>').addClass('deck-count'));
         button=$('<div id="'+card.id+'">').addClass('row-fluid').addClass('available-item').append(button);
       }
       element.append(button);
@@ -209,9 +226,6 @@ function encodeCards(list) {
     var id,prefix,number;
     id=card.id.toUpperCase();
   });
-}
-
-function decodeCards(val) {
 }
 
 function sortCards(list) {
