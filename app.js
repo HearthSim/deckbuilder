@@ -11,7 +11,7 @@ function setClass(playerClass) {
 }
 
 $.extend({
-  getUrlVars: function(){
+  getUrlVars: function() {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
     for(var i = 0; i < hashes.length; i++)
@@ -22,16 +22,18 @@ $.extend({
     }
     return vars;
   },
-  getUrlVar: function(name){
+  getUrlVar: function(name) {
     return $.getUrlVars()[name];
   }
 });
 
 function init() {
   $('#loading-indicator').show();
-  $.getJSON('http://hearthstonejson.com/json/AllSets.json', function(data) {
+  $.getJSON("https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json", function(data) {
     cards = parseData(data);
-    var urlVars=$.getUrlVars();
+    var urlVars = $.getUrlVars();
+
+    // Load cards from saved url
     if ('cards' in urlVars) {
       if (loadDeck(urlVars)) {
         $('#class-select').hide();
@@ -39,25 +41,31 @@ function init() {
         refreshDeck();
       }
     }
+
     $('#loading-indicator').hide();
     console.log('cards: %o', cards);
   });
+
   $('#act-new-deck').click(function() {
     $('#deck-builder').hide();
     $('#class-select').show();
     $('#srch-term').focus().select();
   });
+
   $('#class-select ul li a').click(function() {
     setClass($(this).data().class)
     clearDeck();
     $('#class-select').hide();
     $('#deck-builder').show();
   });
+
   $(window).on('scroll',onScroll);
+
   $('#tab-class a').click(function() {
     $(window).scrollTop(Math.floor($('#card-list').offset().top));
     onScroll();
   });
+
   $('#tab-neutral a').click(function() {
     var offset=0;
     if ($(window).scrollTop() >= Math.floor($('#card-list').offset().top)) {
@@ -66,7 +74,9 @@ function init() {
     $(window).scrollTop(Math.floor(Math.floor($('#neutral-label').offset().top+offset-$('#card-list-header').height())));
     onScroll();
   });
+
   setInterval(function() { observeInputValue($('#srch-term').val()); }, 100);
+
   $('#search-clear').click(function() {
     $('#srch-term').val('');
   });
@@ -95,34 +105,32 @@ function loadDeck(urlVars) {
 }
 
 function parseData(data) {
-  var result = {byCollection:data};
-  var collectible={};
-  var byid={};
-  $.each(data, function(collectionName,collection) {
-    $.each(collection, function(cardIndex,card) {
-      //if (card.hasOwnProperty('collectible') && card['collectible']) {
-      if (card['collectible'] && card['type']!="Hero") {
-        card['collection']=collectionName;
+  var result = {};
+  var collectible = {};
+  var byid = {};
+  $.each(data, function(cardIndex, card) {
+      if (card["type"] != "HERO") {
         var playerClass;
         if (card.hasOwnProperty('playerClass')) {
-          playerClass=card.playerClass;
+          playerClass = card.playerClass;
         } else {
-          playerClass=null;
+          playerClass = null;
         }
 
         if (!collectible.hasOwnProperty(playerClass)) {
-          collectible[playerClass]=[];
+          collectible[playerClass] = [];
         }
         collectible[playerClass].push(card);
-        byid[card.id]=card;
+        byid[card.id] = card;
       }
-    });
   });
+
   $.each(collectible, function(playerClass, cards) {
     sortCards(cards);
   });
-  result['collectible']=collectible;
-  result['byid']=byid;
+
+  result["collectible"] = collectible;
+  result["byid"] = byid;
   return result;
 }
 
@@ -132,6 +140,7 @@ function genCardList(element, list, isDeck) {
   var curve = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
   element.empty();
   $('.in-deck-count').hide();
+
   $.each(list, function(cardIndex, card) {
     if (previous===card) {
       count++;
@@ -227,8 +236,8 @@ function updateSaveLink() {
 
 function encodeCards(list) {
   $.each(list, function(cardIndex, card) {
-    var id,prefix,number;
-    id=card.id.toUpperCase();
+    var id, prefix, number;
+    id = card.id.toUpperCase();
   });
 }
 
@@ -241,16 +250,16 @@ function compareCards(a,b) {
     return a.cost-b.cost;
   }
   if (a.type != b.type) {
-    if (a.type == "Weapon") {
+    if (a.type == "WEAPON") {
       return -1;
     }
-    if (a.type == "Minion") {
+    if (a.type == "MINION") {
       return 1;
     }
-    if (b.type == "Weapon") {
+    if (b.type == "WEAPON") {
       return 1;
     }
-    if (b.type == "Minion") {
+    if (b.type == "MINION") {
       return -1;
     }
   }
